@@ -107,5 +107,8 @@ router.get('/profile', checkAuth, (req, res) => {
 
 });
 
+router.get('/admin', (req,res) => {
+    res.render('admin');
+})
 
 module.exports = router;
