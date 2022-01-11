@@ -114,9 +114,7 @@ router.get('/profile', checkAuth, (req, res) => {
 
 router.get('/admin', (req,res) => {
     var mydata;
-    user.find({}.where('username').ne(['admin'])
-    .populate('username')
-        , (err, data) => {
+    user.find({isAdmin :false},(err, data) => {
         if(err)
         {
             console.log(err);
