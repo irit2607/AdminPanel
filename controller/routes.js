@@ -78,13 +78,18 @@ router.post('/signup', (req, res) => {
     }
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', 
     passport.authenticate('local', {
         failureRedirect: '/login',
         successRedirect: '/profile',
         failureFlash: true,
-    })(req, res, next);
-});
+    }),
+    (req, res, next)=>{
+        if (req.user.isAdmin === true) {
+            return res.redirect("/admin");
+        }
+    }
+);
 
 router.get('/logout', (req, res) => {
     req.logout();
@@ -108,7 +113,28 @@ router.get('/profile', checkAuth, (req, res) => {
 });
 
 router.get('/admin', (req,res) => {
-    res.render('admin');
-})
+    var mydata;
+    user.find({}.where('username').ne(['admin'])
+    .populate('username')
+        , (err, data) => {
+        if(err)
+        {
+            console.log(err);
+        }
+        if(data)
+        {
+            mydata = data;
+        }
+        res.render("admin", {data : mydata});
+    });
+});
+
+router.post('/delete',(req,res) => {
+    const id  = req.body.id;
+
+    user.findByIdAndRemove({ _id : id}, (err, doc) => {
+        res.redirect('/admin');
+    });
+});
 
 module.exports = router;
